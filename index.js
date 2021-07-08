@@ -1,26 +1,27 @@
 const body = document.getElementsByTagName("body")[0];
-const firstButton = document.getElementById("first-button");
 const firstPage = document.getElementById("first-page");
 const listTextArea = document.getElementById("list-text-area");
 const teamsInput = document.getElementById("teams-input");
-let listSect;
-let teamSect;
 
 let listArray;
 let nameContainer;
 let teamContainer;
+let assignButtonContainer;
 
-const getListArray = function (value) {
+const createListArray = function (value) {
+  listArray = value.split(",");
+  return listArray;
+};
+
+const displayListArray = function (array) {
   nameContainer = document.createElement("div");
   nameContainer.innerHTML = "<h2>Name List</h2>";
   nameContainer.classList.add("container");
-  listArray = value.split(",");
   let nameRow = document.createElement("div");
-
   nameRow.classList.add("row");
-  for (i = 0; i < listArray.length; i++) {
+  for (i = 0; i < array.length; i++) {
     let nameItem = document.createElement("div");
-    nameItem.innerText = listArray[i];
+    nameItem.innerText = array[i];
     nameItem.classList.add(
       "col-6",
       "col-xs-4",
@@ -56,9 +57,13 @@ const createTeams = function (value) {
   teamContainer.appendChild(teamRow);
   body.appendChild(teamContainer);
 };
-// let x = 0;
+// <------------------------------------------------------------------->
 
-const moveToTeam = function () {
+const getMaxPerTeam = function () {
+  return listArray.length / teamsInput.value;
+};
+
+const moveNameFromListToTeam = function () {
   let nameSquares = document.getElementsByClassName("name-square");
 
   if (nameSquares.length > 0) {
@@ -69,18 +74,62 @@ const moveToTeam = function () {
     newTeamMember.innerHTML = `<li>${lastName}</li>`;
     selectedTeam.appendChild(newTeamMember);
     nameSquares[0].remove();
-    // x++;
-    // console.log(x);
-    //   console.log(randomNumber);
   } else {
     let assignButton = document.getElementById("assign-btn");
     assignButton.remove();
-    assignButtonContainer.innerHTML = `<h1>All Allocated</h1><button onClick="window.location.reload();">Assign New Teams</button>`;
+    assignButtonContainer.innerHTML = `<h1>All Allocated</h1><div class="row">
+    <div class="col text-center">
+      <button class="btn btn-dark btn-lg" onclick="window.location.reload()">
+        Assign New Teams
+      </button>
+    </div>
+  </div>`;
   }
 };
 
-// moveToTeam();
-let assignButtonContainer;
+// const getMaxPerTeam = function () {
+//   return listArray.length / teamsInput.value;
+// };
+
+// let maxPerTeam = getMaxPerTeam();
+
+const selectNextTeam = function () {
+  let randomNumber = Math.floor(Math.random() * teamsInput.value + 1);
+  let selectedTeam1 = document.getElementById(`team${randomNumber}`);
+  let selectedTeamLength = document.querySelectorAll(`team${randomNumber} div`);
+  while (selectedTeamLength.length >= maxPerTeam) {
+    randomNumber = Math.floor(Math.random() * teamsInput.value + 1);
+    selectedTeam1 = document.getElementById(`team${randomNumber}`);
+  }
+  return selectedTeam1;
+};
+
+// const moveNameFromListToTeam = function () {
+//   let nameSquares = document.getElementsByClassName("name-square");
+
+//   if (nameSquares.length > 0) {
+//     let lastName = listArray.shift();
+//     // let randomNumber = Math.floor(Math.random() * teamsInput.value + 1);
+//     // let selectedTeam = document.getElementById(`team${randomNumber}`);
+//     let selectedTeam = selectNextTeam();
+//     let newTeamMember = document.createElement("div");
+//     newTeamMember.innerHTML = `<li>${lastName}</li>`;
+//     selectedTeam.appendChild(newTeamMember);
+//     nameSquares[0].remove();
+//   } else {
+//     let assignButton = document.getElementById("assign-btn");
+//     assignButton.remove();
+//     assignButtonContainer.innerHTML = `<h1>All Allocated</h1><div class="row">
+//     <div class="col text-center">
+//       <button class="btn btn-dark btn-lg" onclick="window.location.reload()">
+//         Assign New Teams
+//       </button>
+//     </div>
+//   </div>`;
+//   }
+// };
+
+// <------------------------------------------------------------------->
 
 const generateAssignButton = function () {
   assignButtonContainer = document.createElement("div");
@@ -90,12 +139,19 @@ const generateAssignButton = function () {
   </button>
 </div>`;
   body.appendChild(assignButtonContainer);
-  assignButtonContainer.addEventListener("click", moveToTeam);
+  assignButtonContainer.addEventListener("click", moveNameFromListToTeam);
 };
 
 const generateTeamSect = function () {
   firstPage.remove();
-  getListArray(listTextArea.value);
+  let currentArray = createListArray(listTextArea.value);
+
+  let maxPerTeam = listArray.length / teamsInput.value;
+
+  displayListArray(currentArray);
   createTeams(teamsInput.value);
   generateAssignButton();
 };
+
+//TO DO: Set maximum number per team
+//TO DO: Set undo to reassign someone to different team
