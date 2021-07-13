@@ -50,7 +50,7 @@ const createTeams = function (value) {
       "col-6",
       "col-xs-4",
       "col-sm-3",
-      "col-md-2",
+      //   "col-md-2",
       "team-square"
     );
     teamRow.appendChild(newTeam);
@@ -127,3 +127,10 @@ const generateTeamSect = function () {
 };
 
 //TO DO: Set undo to reassign someone to different team
+//Could do this byfirst slicing the first item of the array before shifting it.
+//Store this sliced item in a variable
+//Generate a button undo
+//If pressed this unshifts the sliced item onto the array and removes it from the team list
+
+//TO DO: Move the Assign button to a more practical place so that it won't move down the page as the teams get made
+//TO DO: Use row-cols to make it more even when theres less than 4 teams
