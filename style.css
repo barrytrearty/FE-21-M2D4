@@ -31,3 +31,9 @@ input[type="number"] {
   margin: auto;
   display: block;
 }
+
+#list-text-area {
+  margin: auto;
+  width: 20vw;
+  min-height: 200px;
+}

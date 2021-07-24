@@ -7,8 +7,10 @@ let listArray;
 let nameContainer;
 let teamContainer;
 let assignButtonContainer;
-
+let undoButtonContainer;
+let undoArray = [];
 let maxPerTeam;
+let nameRow;
 
 const createListArray = function (value) {
   listArray = value.split(",");
@@ -19,7 +21,7 @@ const displayListArray = function (array) {
   nameContainer = document.createElement("div");
   nameContainer.innerHTML = "<h2>Name List</h2>";
   nameContainer.classList.add("container");
-  let nameRow = document.createElement("div");
+  nameRow = document.createElement("div");
   nameRow.classList.add("row");
   for (i = 0; i < array.length; i++) {
     let nameItem = document.createElement("div");
@@ -84,14 +86,19 @@ const moveNameFromListToTeam = function () {
 
   if (nameSquares.length > 0) {
     let lastName = listArray.shift();
+    undoArray.push(lastName);
+    console.log(undoArray);
     let selectedTeam = selectNextTeam();
     let newTeamMember = document.createElement("div");
     newTeamMember.innerHTML = `<li>${lastName}</li>`;
+    newTeamMember.id = `${lastName}`;
     selectedTeam.appendChild(newTeamMember);
     nameSquares[0].remove();
   } else {
     let assignButton = document.getElementById("assign-btn");
+    let undoButton = document.getElementById("undo-btn");
     assignButton.remove();
+    undoButton.remove();
     assignButtonContainer.innerHTML = `<h1>All Allocated</h1><div class="row">
     <div class="col text-center">
       <button class="btn btn-dark btn-lg" onclick="window.location.reload()">
@@ -100,6 +107,33 @@ const moveNameFromListToTeam = function () {
     </div>
   </div>`;
   }
+
+  if (document.getElementById("undo-btn")) {
+    document.getElementById("undo-btn").remove();
+  }
+  generateUndoButton();
+};
+
+const returnNameToList = function (name) {
+  listArray.push(`${name}`);
+  let returnedNameDiv = document.createElement("div");
+  returnedNameDiv.classList.add(
+    "col-6",
+    "col-xs-4",
+    "col-sm-3",
+    "col-md-2",
+    "name-square"
+  );
+  returnedNameDiv.innerHTML = `${name}`;
+  nameRow.appendChild(returnedNameDiv);
+};
+
+const removeNameFromTeam = function () {
+  let nameToBeRemoved = undoArray.pop(-1);
+  let nameToBeRemovedDiv = document.getElementById(`${nameToBeRemoved}`);
+  nameToBeRemovedDiv.remove();
+  returnNameToList(nameToBeRemoved);
+  console.log(undoArray);
 };
 
 // <------------------------------------------------------------------->
@@ -113,6 +147,17 @@ const generateAssignButton = function () {
 </div>`;
   body.appendChild(assignButtonContainer);
   assignButtonContainer.addEventListener("click", moveNameFromListToTeam);
+};
+
+const generateUndoButton = function () {
+  undoButtonContainer = document.createElement("div");
+  undoButtonContainer.innerHTML = `<div id="undo-btn" class="col text-center">
+  <button class="btn btn-dark btn-lg mt-5">
+    UNDO
+  </button>
+</div>`;
+  body.appendChild(undoButtonContainer);
+  undoButtonContainer.addEventListener("click", removeNameFromTeam);
 };
 
 const generateTeamSect = function () {
