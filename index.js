@@ -13,7 +13,7 @@ let maxPerTeam;
 let nameRow;
 
 const createListArray = function (value) {
-  listArray = value.split(",");
+  listArray = value.split(/[\s,;]+/);
   return listArray;
 };
 
@@ -96,9 +96,9 @@ const moveNameFromListToTeam = function () {
     nameSquares[0].remove();
   } else {
     let assignButton = document.getElementById("assign-btn");
-    let undoButton = document.getElementById("undo-btn");
+    // let undoButton = document.getElementById("undo-btn");
     assignButton.remove();
-    undoButton.remove();
+    // undoButton.remove();
     assignButtonContainer.innerHTML = `<h1>All Allocated</h1><div class="row">
     <div class="col text-center">
       <button class="btn btn-dark btn-lg" onclick="window.location.reload()">
